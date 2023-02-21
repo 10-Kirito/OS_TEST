@@ -4,7 +4,7 @@
 #include <iostream>
 #include <list>
 #include <thread>
-#include <Windows.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -15,7 +15,7 @@ void show_process_timely(const Cpu & cpu)
 
 	while (!cpu.Cpu_status())
 	{
-        Sleep(1500);
+        sleep(1500);
         cpu.show_running_waiting();
         cpu.show_process_status();
         cout << "================================================================" << endl;

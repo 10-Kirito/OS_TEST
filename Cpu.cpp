@@ -2,8 +2,8 @@
 #include "tools.h"
 
 #include <iostream>
-#include <Windows.h>
 #include <list>
+#include <unistd.h>
 #include <algorithm>
 // #include <cstdlib>
 
@@ -118,7 +118,7 @@ void Cpu::priority_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = ::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		Sleep(1000);
+		sleep(1000);
 		ptr->change_times();
 		ptr->change_Priority(-3);
 
@@ -164,7 +164,7 @@ void Cpu::priority_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = ::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		Sleep(1000);
+		sleep(1000);
 		ptr->change_times();
 		ptr->change_Priority(-3);
 		ptr_temp->change_times();
@@ -219,7 +219,7 @@ void Cpu::round_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = std::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		Sleep(1000);
+		sleep(1000);
 		ptr->change_times();
 		// 实时更新进程的状态
 		ptr_temp->change_times();
@@ -257,7 +257,7 @@ void Cpu::round_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = std::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		Sleep(1000);
+		sleep(1000);
 		ptr->change_times();
 		ptr_temp->change_times();
 

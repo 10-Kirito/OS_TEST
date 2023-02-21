@@ -1,7 +1,8 @@
 #include "Process.h"
 
 #include <iostream>
-#include <Windows.h>
+#include <unistd.h>
+
 using namespace std;
 
 #ifdef PRIORITY

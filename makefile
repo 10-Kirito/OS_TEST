@@ -14,6 +14,5 @@ Process.o: Process.h
 
 Cpu.o: Cpu.h tools.h
 
-.PHONY :clean
 clean:
-	del test1 $(objects_1)
+	rm test1 $(objects_1)
