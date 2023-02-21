@@ -1,6 +1,6 @@
 objects_1 = Process_schedule.o Process.o Cpu.o
 
-objects_2 = OPT.o LRU.o
+objects_2 = OPT.o LRU.o OPT_LRU.o
 
 # test1:
 
