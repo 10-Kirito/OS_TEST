@@ -1,23 +1,13 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <algorithm>
 
 using namespace std;
 
-int main() {
-    int n, m; // n is the number of memory frames, m is the number of page requests
-    cout << "Enter the number of memory frames: ";
-    cin >> n;
-    cout << "Enter the number of page requests: ";
-    cin >> m;
-
-    vector<int> pages(m); // vector to store page requests
-    cout << "Enter the page requests: ";
-    for (int i = 0; i < m; i++) {
-        cin >> pages[i];
-    }
-
-    vector<int> memory(n, -1); // vector to represent the memory frames, initialized to -1
+std::pair<int, int> OPT(vector<int> pages, vector<int> memory) {
+    int n = memory.size();
+    int m = pages.size(); // n is the number of memory frames, m is the number of page requests
 
     int page_faults = 0; // counter for the number of page faults
     int page_interrupts = 0; // counter for the number of page interrupts
@@ -82,9 +72,5 @@ int main() {
         }
     }
 
-    cout << "Page faults: " << page_faults << endl;
-    // cout << "Page interrupts: " << page_interrupts << endl;
-    cout << "Page evictions: " << page_evictions << endl;
-
-    return 0;
+    return std::make_pair(page_faults, page_evictions);
 }

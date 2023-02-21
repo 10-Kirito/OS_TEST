@@ -1,6 +1,6 @@
 objects_1 = Process_schedule.o Process.o Cpu.o
 
-objects_2 = OPT.o
+objects_2 = OPT.o LRU.o
 
 # test1:
 
@@ -13,11 +13,11 @@ Cpu.o: Cpu.h tools.h
 
 # test2:
 
-OPT : $(objects_2)
-	g++ -o OPT $(objects_2)
+OPT_LRU : $(objects_2)
+	g++ -o OPT_LRU $(objects_2)
 
 
 
 clean:
 	rm test1 $(objects_1)
-	rm OPT $(objects_2)
+	rm OPT_LRU $(objects_2)
