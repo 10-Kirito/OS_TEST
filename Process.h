@@ -1,7 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-// #define PRIORITY
+//#define PRIORITY
 // #define ROUND
 #include<string>
 // #include<cstdlib>
@@ -18,7 +18,8 @@ protected:
 
 #ifdef PRIORITY
 	int _priority;
-#else
+#endif
+#ifdef ROUND
 	int _round_time;
 #endif // ROUND
 
@@ -30,7 +31,8 @@ public:
 
 #ifdef PRIORITY
 	Process();
-#else
+#endif
+#ifdef ROUND
 	Process();
 #endif
 
@@ -39,7 +41,8 @@ public:
 	int getPriority() const;
 	void change_Priority(int num);
 	void change_times();
-#else
+#endif
+#ifdef ROUND
 	Process(int pid, Process * next, int round_time, int used_time, int need_time, MyEnum status);
 	void change_times();
 	bool check_round_end();

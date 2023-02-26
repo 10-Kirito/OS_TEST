@@ -35,12 +35,12 @@ int main(){
 
 
     cout << "OPT: " << std::endl;
-    cout << "pages_fault_number: "<< result_opt.first  << "page_replacement_number: " << result_opt.second<<std::endl;
+    cout << "pages_fault_number: "<< result_opt.first  << "    page_replacement_number: " << result_opt.second<<std::endl;
 
 
 
     cout << "LRU: " << std::endl; 
-    cout << "pages_fault_number: "<< result_lru.first  << "page_replacement_number: " << result_lru.second<<std::endl;
+    cout << "pages_fault_number: "<< result_lru.first  << "    page_replacement_number: " << result_lru.second<<std::endl;
 
 
 }

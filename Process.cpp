@@ -29,12 +29,12 @@ void Process::change_times() {
 	_need_time--;
 }
 
-
-#else
+#endif
+#ifdef ROUND
 Process::Process() :
 	_pid(rand() % 1000),
 	_next(nullptr),
-	_round_time(rand() % 10),
+	_round_time(rand() % 10 + 1),
 	_used_time(0),
 	_need_time(rand() % 20),
 	_status(MyEnum::WAITING)
@@ -51,7 +51,9 @@ Process::Process(int pid,Process * next, int priority, int used_time, int need_t
 	_need_time(need_time),
 	_status(status)
 {}
-#else
+
+#endif
+#ifdef ROUND
 Process::Process(int pid, Process* next, int round_time, int used_time, int need_time, MyEnum status)
 	:_pid(rand() % 1000),
 	_next(next),
@@ -126,7 +128,8 @@ ostream& operator << (ostream & out, Process & pro) {
 
 #ifdef PRIORITY
 	out << "priority: " << pro._priority << endl;
-#else // PRIORITY
+#endif
+#ifdef ROUND // PRIORITY
 	out << "Round_time: " << pro._round_time << endl;
 #endif
 

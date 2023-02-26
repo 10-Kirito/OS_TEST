@@ -31,9 +31,16 @@ void Cpu::show_process_status() const
 	cout << "PRIORITY: \t";
 	for (auto& pro : _output)
 		cout << pro.getPriority() << "\t";
-#else
-	cout << "ROUNDTIME: \t";
-	for (auto& pro : _output)
+#endifï¿¼
+// 2. è¿›ç¨‹ç±»ï¼Œç”¨æ¥æ¨¡æ‹Ÿç³»ç»Ÿä¸­çš„è¿›ç¨‹ï¼›
+// è¯¥ç±»ä¸­é™¤äº†æœ¬æ¬¡å®žéªŒä¸­æ‰€éœ€è¦çš„ 1. è¿›ç¨‹æ‰€éœ€è¦çš„æ—¶é—´ï¼› 2. è¿›ç¨‹å·²ç»ä½¿ç”¨çš„æ—¶é—´ï¼›3. è¿›ç¨‹çš„çŠ¶æ€ï¼›
+// æ›´é‡è¦çš„æ˜¯ï¼Œæˆ‘ä»¬æ ¹æ®ç³»ç»Ÿæ‰€é€‰æ‹©çš„è¿›ç¨‹è°ƒåº¦ç®—æ³•ï¼Œæ¥ç¼–è¯‘å£°æ˜Žä¸åŒçš„å˜é‡ï¼š
+// å¯¹äºŽä¼˜å…ˆçº§è°ƒåº¦æ–¹æ³•ï¼š
+//      æˆ‘ä»¬å£°æ˜Žäº†_priorityå˜é‡æ¥æ ‡è¯†è¿›ç¨‹çš„ä¼˜å…ˆçº§ï¼›
+// å¯¹äºŽè½®è½¬æ–¹æ³•ï¼š
+//      æˆ‘ä»¬å£°æ˜Žäº†_round_timeå˜é‡æ¥æ ‡è¯†
+â€‹
+t)
 		cout << pro.get_round_time() << "\t";
 #endif
 
@@ -108,7 +115,7 @@ void Cpu::priority_schedule()
 	list<Process>::iterator ptr_temp;
 	Process temp;
 
-	/// Èç¹ûµ±Ç°ÔËÐÐ¶ÓÁÐÎª¿ÕµÄ»°£¬ÎÒÃÇ½«´¦ÓÚµÈ´ý¶ÓÁÐÖÐ×îÇ°ÃæµÄ½ø³ÌÒÆ³ö
+	/// å¦‚æžœå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸ºç©ºçš„è¯ï¼Œæˆ‘ä»¬å°†å¤„äºŽç­‰å¾…é˜Ÿåˆ—ä¸­æœ€å‰é¢çš„è¿›ç¨‹ç§»å‡º
 	if (_rlist.empty())
 	{
 		ptr = _wlist.begin();
@@ -118,21 +125,21 @@ void Cpu::priority_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = ::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		sleep(1000);
+		sleep(1);
 		ptr->change_times();
 		ptr->change_Priority(-3);
 
-		// ÊµÊ±¸üÐÂ½ø³ÌµÄ×´Ì¬
+		// å®žæ—¶æ›´æ–°è¿›ç¨‹çš„çŠ¶æ€
 		ptr_temp->change_times();
 		ptr_temp->change_Priority(-3);
 
 		
 
-		/// ±È½Ïµ±Ç°ÔËÐÐ¶ÓÁÐÖÐµÄ½ø³ÌºÍ´¦ÓÚµÈ´ý×´Ì¬µÄ½ø³ÌµÄÓÅÏÈ¼¶
-		/// Èç¹ûµ±Ç°ÔËÐÐ¶ÓÁÐÖÐµÄ½ø³ÌÈÔÈ»ÓÅÏÈ¼¶×î¸ß£¬ÄÇÃ´¼ÌÐøµ÷¶È
-		///	·ñÔòµÄ»°£¬½«ÆäÒÆ³ö¶ÓÁÐ
+		/// æ¯”è¾ƒå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸­çš„è¿›ç¨‹å’Œå¤„äºŽç­‰å¾…çŠ¶æ€çš„è¿›ç¨‹çš„ä¼˜å…ˆçº§
+		/// å¦‚æžœå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸­çš„è¿›ç¨‹ä»ç„¶ä¼˜å…ˆçº§æœ€é«˜ï¼Œé‚£ä¹ˆç»§ç»­è°ƒåº¦
+		///	å¦åˆ™çš„è¯ï¼Œå°†å…¶ç§»å‡ºé˜Ÿåˆ—
 
-		/// Èç¹ûµ±Ç°½ø³ÌÈÔÈ»Ã»ÓÐ½áÊø
+		/// å¦‚æžœå½“å‰è¿›ç¨‹ä»ç„¶æ²¡æœ‰ç»“æŸ
 		if (!ptr->check_End())
 		{
 			if (ptr->getPriority() >= _wlist.front().getPriority())
@@ -151,7 +158,7 @@ void Cpu::priority_schedule()
 		}
 		else
 		{
-			// µ±Ç°½ø³ÌÒÑ¾­ÔËÐÐÍê±Ï
+			// å½“å‰è¿›ç¨‹å·²ç»è¿è¡Œå®Œæ¯•
 			// ptr->set_Status(MyEnum::FINISH);
 			ptr_temp = ::find(_output.begin(), _output.end(), *ptr);
 			ptr_temp->set_Status(MyEnum::FINISH);
@@ -160,11 +167,11 @@ void Cpu::priority_schedule()
 		}
 	}else
 	{
-		/// Èç¹ûµ±Ç°ÔËÐÐ¶ÓÁÐ²»ÊÇ¿ÕµÄ»°,¶ÔÏàÓ¦µÄ½ø³Ì½øÐÐµ÷¶È
+		/// å¦‚æžœå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸æ˜¯ç©ºçš„è¯,å¯¹ç›¸åº”çš„è¿›ç¨‹è¿›è¡Œè°ƒåº¦
 		ptr = _rlist.begin();
 		ptr_temp = ::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		sleep(1000);
+		sleep(1);
 		ptr->change_times();
 		ptr->change_Priority(-3);
 		ptr_temp->change_times();
@@ -198,8 +205,8 @@ void Cpu::priority_schedule()
 		}
 	}
 }
-
-#else
+#endif
+#ifdef ROUND
 void Cpu::round_schedule()
 {
 	if (_wlist.empty() && _rlist.empty())
@@ -209,7 +216,7 @@ void Cpu::round_schedule()
 	list<Process>::iterator ptr_temp;
 	Process temp;
 
-	/// Èç¹ûµ±Ç°ÔËÐÐ¶ÓÁÐÎª¿ÕµÄ»°£¬ÎÒÃÇ½«´¦ÓÚµÈ´ý¶ÓÁÐÖÐ×îÇ°ÃæµÄ½ø³ÌÒÆ³ö
+	/// å¦‚æžœå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸ºç©ºçš„è¯ï¼Œæˆ‘ä»¬å°†å¤„äºŽç­‰å¾…é˜Ÿåˆ—ä¸­æœ€å‰é¢çš„è¿›ç¨‹ç§»å‡º
 	if (_rlist.empty())
 	{
 		ptr = _wlist.begin();
@@ -219,13 +226,13 @@ void Cpu::round_schedule()
 		ptr = _rlist.begin();
 		ptr_temp = std::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		sleep(1000);
+		sleep(1);
 		ptr->change_times();
-		// ÊµÊ±¸üÐÂ½ø³ÌµÄ×´Ì¬
+		// å®žæ—¶æ›´æ–°è¿›ç¨‹çš„çŠ¶æ€
 		ptr_temp->change_times();
 
-		/// ±È½Ïµ±Ç°ÕýÔÚÔËÐÐ¶ÓÁÐÖÐµÄ½ø³ÌÂÖ×ªÆ¬ÊýÊÇ·ñÒÑ¾­´ïµ½
-		///	Èç¹ûÒÑ¾­Âú×ãÌõ¼þ£¬¾Í½«Æä·Åµ½µÈ´ý¶ÓÁÐÎ²²¿
+		/// æ¯”è¾ƒå½“å‰æ­£åœ¨è¿è¡Œé˜Ÿåˆ—ä¸­çš„è¿›ç¨‹è½®è½¬ç‰‡æ•°æ˜¯å¦å·²ç»è¾¾åˆ°
+		///	å¦‚æžœå·²ç»æ»¡è¶³æ¡ä»¶ï¼Œå°±å°†å…¶æ”¾åˆ°ç­‰å¾…é˜Ÿåˆ—å°¾éƒ¨
 
 		if (!ptr->check_End())
 		{
@@ -243,7 +250,7 @@ void Cpu::round_schedule()
 		}
 		else
 		{
-			// µ±Ç°½ø³ÌÒÑ¾­ÔËÐÐÍê±Ï
+			// å½“å‰è¿›ç¨‹å·²ç»è¿è¡Œå®Œæ¯•
 			// ptr->set_Status(MyEnum::FINISH);
 			ptr_temp = std::find(_output.begin(), _output.end(), *ptr);
 			ptr_temp->set_Status(MyEnum::FINISH);
@@ -253,11 +260,11 @@ void Cpu::round_schedule()
 	}
 	else
 	{
-		/// Èç¹ûµ±Ç°ÔËÐÐ¶ÓÁÐ²»ÊÇ¿ÕµÄ»°,¶ÔÏàÓ¦µÄ½ø³Ì½øÐÐµ÷¶È
+		/// å¦‚æžœå½“å‰è¿è¡Œé˜Ÿåˆ—ä¸æ˜¯ç©ºçš„è¯,å¯¹ç›¸åº”çš„è¿›ç¨‹è¿›è¡Œè°ƒåº¦
 		ptr = _rlist.begin();
 		ptr_temp = std::find(_output.begin(), _output.end(), *ptr);
 		ptr_temp->set_Status(MyEnum::RUNNING);
-		sleep(1000);
+		sleep(1);
 		ptr->change_times();
 		ptr_temp->change_times();
 

@@ -1,162 +1,128 @@
 #include "Banker.h"
-#include <iostream>
-#include <ostream>
-#include <vector>
 
-int main() {
-    int num_processes, num_resources;
-    cout << "Enter the number of processes: ";
-    cin >> num_processes;
-    cout << "Enter the number of resources: ";
-    cin >> num_resources;
+bool isSafe(vector<Process> &processes, vector<int> available, vector<bool> &finished) {
+    std::vector<Process>::size_type num_processes = processes.size();
+    std::vector<int>::size_type num_resources = available.size();
 
-    // Initialize available resources
-    vector<int> available(num_resources);
-    cout << "Enter the available resources: ";
+    vector<int> work = available;
+    vector<bool> finished_temp = finished;
+    int count = 0;
+    while (count < num_processes) {
+        bool found = false;
+        // If no available resources can be found for all current processes,
+        // found will be assigned the value false, the function will return with false
+        for (int i = 0; i < num_processes; i++) {
+            if (!finished_temp[i] && processes[i].need <= work) {
+                for (int j = 0; j < num_resources; j++) {
+                    work[j] += processes[i].allocation[j];
+                }
+                finished_temp[i] = true;
+                found = true;
+                count++;
+            }
+        }
+        if (!found) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+// Function to allocate resources to a process, if there are not enough resources
+// function will be return with false, Indicates that the process cannot currently allocate resources
+bool allocateResources(Process& process, vector<int>& available) {
+    int num_resources = available.size();
     for (int i = 0; i < num_resources; i++) {
-        cin >> available[i];
-    }
-    
-
-    // Initialize processes
-    vector<Process> processes(num_processes);
-    for (int i = 0; i < num_processes; i++) {
-        processes[i].pid = i;
-        processes[i].allocation.resize(num_resources);
-        processes[i].max.resize(num_resources);
-        processes[i].need.resize(num_resources);
-        cout << "Enter the allocation matrix for process " << i << ": ";
-        for (int j = 0; j < num_resources; j++) {
-            cin >> processes[i].allocation[j];
-            available[j] -= processes[i].allocation[j];
-        }
-        cout << "Enter the max matrix for process " << i << ": ";
-        for (int j = 0; j < num_resources; j++) {
-            cin >> processes[i].max[j];
-            processes[i].need[j] = processes[i].max[j] - processes[i].allocation[j];
+        if (process.need[i] > available[i]) {
+            return false;
         }
     }
 
-    // Print initial state
-    cout << "Initial state:" << endl;
-    cout << "Available: ";
     for (int i = 0; i < num_resources; i++) {
-        cout << available[i] << " ";
-    }
-    cout << endl;
-    for (int i = 0; i < num_processes; i++) {
-        cout << "Process " << processes[i].pid << ": ";
-        cout << "Allocation = [";
-        for (int j = 0; j < num_resources; j++) {
-            cout << processes[i].allocation[j] << " ";
-        }
-        cout << "], Max = [";
-        for (int j = 0; j < num_resources; j++) {
-            cout << processes[i].max[j] << " ";
-        }
-        cout << "], Need = [";
-        for (int j = 0; j < num_resources; j++) {
-            cout << processes[i].need[j] << " ";
-        }
-        cout << "]" << endl;
+        available[i] -= process.need[i];
+        process.allocation[i] += process.need[i];
+        process.need[i] = 0;
     }
 
+    //deallocateResources(process,available);
 
-    // Simulate resource allocation
-    cout << "Begin Simulate resource allocation:" << endl;
-    
-    vector<bool> finished(num_resources,false);
-    //while (true) {
-        // simulate process apply resources
-    cout << "please input the resource the process 0 need:";
-    vector<int> temp(num_processes);
+    return true;
+}
+
+
+// Function to deallocate resources from a process
+void deallocateResources(Process& process, vector<int>& available) {
+    int num_resources = available.size();
     for (int i = 0; i < num_resources; i++) {
-        cin >> temp[i];
+        available[i] += process.allocation[i];
+        process.allocation[i] = 0;
+        process.need[i] = process.max[i];
+    }
+}
+
+
+// Check whether the resources requested by the current process are less than 
+// the resources required by itself
+
+bool checkLessNeed(Process& process, vector<int> &request){
+    return request <= process.need;
+}
+
+// Check whether the resources requested by the current process are less than
+// the available resources
+
+bool checkLessAvail(vector<int>& available, vector<int> &request){
+    return request <= available;
+}
+
+
+vector<int> operator - (const vector<int> & lhs, const vector<int> & rhs){
+    if (lhs.size() != rhs.size()) {
+        throw runtime_error("Vector must be of the ssame size!");
+    }
+    vector<int> result;
+    // use 'reserve' to pre-allocate memory for the result to improve the performance
+    result.reserve(lhs.size());
+
+    for (const auto& x : lhs) {
+        result.push_back(x-rhs[&x - &lhs[0]]);
     }
 
-    cout << "the apply resources is: ";
-    for (auto x : temp) {
-        cout << x << " ";
-    }
-    cout << endl;
+    return result;
+}
 
-    vector<Process> pro_temp = processes;
-    pro_temp[0].need =  pro_temp[0].need - temp;
-    // 1. Check whether the resources requested by the process are greater than the number of resources required by the process
+vector<int> operator -= (const vector<int> & lhs, const vector<int> & rhs){
+    return lhs - rhs;
+}
 
-    if(checkLessNeed(processes[0], temp))
-    {
-        cout << "checkLessNeed funciton test passed" << endl;
-        // 2. Check if there is a safe state
-        if (isSafe(pro_temp, available - temp, finished)) {
-            cout << "Process 0 can apply for resource!"<<endl;
-        }else {
-            cout << "Process 0 can't apply for resource!"<<endl;
+// Process:
+//      int pid;
+//      vector<int> allocation;
+//      vector<int> max;
+//      vector<int> need;
+
+
+void display(const vector<Process> & process){
+    cout << "============================================" << endl;
+    cout << "PTD \t ALLOCATIONI \t MAX \t\t NEED" << endl;
+    if(process.empty())
+        cout << "Empty!!" << endl;
+    else{
+        for (auto & e : process) {
+            cout << e.pid << " \t " << e.allocation << " \t " << e.max << " \t " << e.need << endl;
         }
-        // 3. if the state is safe, then agree to the resources requested by the process just now
-    }else {
-        cout << "Failed to apply for resources!"<<endl;
+    };
+}
+
+
+// check the process if exists
+bool findProcess(const vector<Process> &processes, int pid){
+    for (auto &e : processes) {
+        if (e.pid == pid) {
+            return true;
+        }
     }
-
-
-        
-
-
-
-        // 
-
-    //}
-
-
-
-
-
-
-
-
-    // vector<bool> finished(num_processes, false);
-    // while (true) {
-    //     // Check if there is a safe state
-    //     if (isSafe(processes, available, finished)) {
-    //         int i;
-    //         for (i = 0; i < num_processes; i++) {
-    //             if (!finished[i] && allocateResources(processes[i], available)) {
-    //                 // break;
-    //             }
-    //         }
-    //         if (i == num_processes) {
-    //             cout << "Test" << endl;
-    //             break;
-    //         }
-    //     } else {
-    //         cout << "No safe state exists." << endl;
-    //         return 0;
-    //     }
-    // }
-
-    // Print final state
-    // cout << "Final state:" << endl;
-    // cout << "Available: ";
-    // for (int i = 0; i < num_resources; i++) {
-    //     cout << available[i] << " ";
-    // }
-    // cout << endl;
-    // for (int i = 0; i < num_processes; i++) {
-    //     cout << "Process " << processes[i].pid << ": ";
-    //     cout << "Allocation = [";
-    //     for (int j = 0; j < num_resources; j++) {
-    //         cout << processes[i].allocation[j] << " ";
-    //     }
-    //     cout << "], Max = [";
-    //     for (int j = 0; j < num_resources; j++) {
-    //         cout << processes[i].max[j] << " ";
-    //     }
-    //     cout << "], Need = [";
-    //     for (int j = 0; j < num_resources; j++) {
-    //         cout << processes[i].need[j] << " ";
-    //     }
-    //     cout << "]" << endl;
-    // }
-
-    return 0;
+    return false;
 }

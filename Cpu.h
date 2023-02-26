@@ -27,7 +27,8 @@ public:
 
 #ifdef PRIORITY
 	void priority_schedule();
-#else
+#endif
+#ifdef ROUND
 	void round_schedule();
 #endif
 
