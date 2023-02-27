@@ -27,11 +27,11 @@ void Cpu::show_process_status() const
 		cout << pro.getPid() << "\t";
 	cout << endl;
 
-#ifdef PRIORITY
 	cout << "PRIORITY: \t";
 	for (auto& pro : _output)
+#ifdef PRIORITY
 		cout << pro.getPriority() << "\t";
-#endif￼
+#endif
 // 2. 进程类，用来模拟系统中的进程；
 // 该类中除了本次实验中所需要的 1. 进程所需要的时间； 2. 进程已经使用的时间；3. 进程的状态；
 // 更重要的是，我们根据系统所选择的进程调度算法，来编译声明不同的变量：
@@ -39,8 +39,8 @@ void Cpu::show_process_status() const
 //      我们声明了_priority变量来标识进程的优先级；
 // 对于轮转方法：
 //      我们声明了_round_time变量来标识
-​
-t)
+//
+#ifdef ROUND
 		cout << pro.get_round_time() << "\t";
 #endif
 
@@ -155,7 +155,7 @@ void Cpu::priority_schedule()
 				_rlist.pop_front();
 				priority_schedule();
 			}
-		}
+	}
 		else
 		{
 			// 当前进程已经运行完毕
@@ -301,9 +301,5 @@ void Cpu::round_schedule()
 
 
 
-
 }
 #endif // PRIORITY
-
-
-
